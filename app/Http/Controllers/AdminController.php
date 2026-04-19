@@ -4,15 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\Room;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        // Ambil semua reservasi beserta informasi pengguna dan kamar yang terkait
-        $reservations = Reservation::with(['user', 'room'])->get();
+        // Ambil data yang sudah ada di tabel
+        $reservations = Reservation::with(['user', 'room'])->latest()->get();
 
-        return view('admin.dashboard', compact('reservations'));
+        //Kumpulkan data untuk dashboard
+        $totalPesanan = $reservations->count();
+
+        //Pendapatan yang dihitung hanya dari reservasi yang sudah dikonfirmasi
+        $totalPendapatan = $reservations->where('status', 'confirmed')->sum('total_price');
+
+        // Hitung jumlah pesanan berdasarkan status pending
+        $pesananPending = $reservations->where('status', 'pending')->count();
+
+        // Hitung jumlah pesanan berdasarkan status available
+        $kamarTersedia = Room::where('status', 'available')->count();
+
+        return view('admin.dashboard', compact('reservations', 'totalPesanan', 'totalPendapatan', 'pesananPending', 'kamarTersedia'));
     }
 
     public function updateStatus(Request $request, Reservation $reservation)

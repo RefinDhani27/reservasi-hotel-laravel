@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('rooms', function (Blueprint $table) {
+            $table->id();
+            $table->string('room_number')->unique(); // Nomor kamar
+            $table->string('room_type'); // Tipe kamar
+            $table->integer('price_per_night'); // Harga per malam
+            $table->text('description')->nullable(); // Deskripsi kamar
+            $table->enum('status', ['available', 'booked', 'maintenance'])->default('available'); // Status kamar
+            $table->timestamps(); 
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('rooms');
+    }
+};

@@ -8,27 +8,53 @@
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
-                
-                <div class="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200"
-                    <h3 class="text-lg font-bold text-blue-900">Detail Kamar: {{ $room->room_type }} (No: {{ $room->room_number }})</h3>
-                    <p class="text-blue-700">Harga: Rp {{ number_format($room->price_per_night, 0, ',', '.') }} / malam</p>
+
+                <div class="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200" <h3
+                    class="text-lg font-bold text-blue-900">Detail Kamar: {{ $room->room_type }} (No:
+                    {{ $room->room_number }})</h3>
+                    <p class="text-blue-700">Harga: Rp {{ number_format($room->price_per_night, 0, ',', '.') }} / malam
+                    </p>
                     <p class="text-sm text-blue-600 mt-2">{{ $room->description }}</p>
                 </div>
+
+                @if (session('error'))
+                    <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-sm"
+                        role="alert">
+                        <strong class="font-bold">Pemesanan Gagal!</strong>
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div
+                        class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-sm">
+                        <strong class="font-bold">Ada kesalahan pengisian:</strong>
+                        <ul class="list-disc list-inside text-sm mt-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <form action="{{ route('reservations.store', $room->id) }}" method="POST">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label for="check_in_date" class="block text-sm font-medium text-gray-700">Tanggal Check-In</label>
+                            <label for="check_in_date" class="block text-sm font-medium text-gray-700">Tanggal
+                                Check-In</label>
                             <input type="date" name="check_in_date" id="check_in_date"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                required>
                         </div>
 
                         <div>
-                            <label for="check_out_date" class="block text-sm font-medium text-gray-700">Tanggal Check-Out</label>
+                            <label for="check_out_date" class="block text-sm font-medium text-gray-700">Tanggal
+                                Check-Out</label>
                             <input type="date" name="check_out_date" id="check_out_date"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                required>
                         </div>
                     </div>
 

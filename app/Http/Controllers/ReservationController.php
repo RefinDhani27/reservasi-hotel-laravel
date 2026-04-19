@@ -34,6 +34,18 @@ class ReservationController extends Controller
             'check_out_date' => 'required|date|after:check_in_date',
         ]);
 
+        // Validasi double booking dengan memeriksa apakah ada reservasi yang tumpang tindih untuk kamar yang sama
+        $existingReservation = Reservation::where('room_id', $room->id)
+            ->whereIn('status', ['pending', 'confirmed']) // Hanya periksa reservasi yang masih aktif
+            ->where(function ($query) use ($request) {
+                $query->where('check_in_date', '<', $request->check_out_date)
+                    ->where('check_out_date', '>', $request->check_in_date);
+            })->exists();
+
+        if ($existingReservation) {
+            return redirect()->back()->withInput()->with('error', 'Maaf, Kamar ini sudah dipesan untuk tanggal tersebut. Silakan pilih tanggal lain.');
+        }
+
         // Hitung jumlah malam yang dipesan
         $checkIn = Carbon::parse($request->check_in_date);
         $checkOut = Carbon::parse($request->check_out_date);

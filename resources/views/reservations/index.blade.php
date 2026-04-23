@@ -38,6 +38,9 @@
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Invoice</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -68,6 +71,16 @@
                                                         : 'bg-yellow-100 text-yellow-800') }}">
                                                 {{ strtoupper($reservasi->status) }}
                                             </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            @if ($reservasi->status === 'confirmed')
+                                                <a href="{{ route('reservations.invoice', $reservasi->id) }}"
+                                                    class="text-white bg-blue-600 hover:bg-blue-700 font-bold py-1 px-3 rounded shadow-sm text-xs flex items-center inline-block">
+                                                    ⬇️ Cetak PDF
+                                                </a>
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">Tunggu Konfirmasi</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

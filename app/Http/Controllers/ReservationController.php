@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Reservation;
 use App\Models\Room;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
@@ -66,4 +67,15 @@ class ReservationController extends Controller
         // Redirect ke halaman dashboard dengan pesan sukses
         return redirect()->route('dashboard')->with('success', 'Kamar berhasil dipesan! Total Bayar: Rp ' . number_format($totalHarga, 0, ',', '.'));
     }
+
+    // Fungsi untuk mengunduh invoice pemesanan
+    public function downloadInvoice(Reservation $reservation)
+    {
+        if ($reservation->user_id !== \Illuminate\Support\Facades\Auth::id()) {
+            abort(403, 'Akses ditolak, Anda bukan pemilik reservasi ini.'); // Pastikan hanya pemilik reservasi yang dapat mengunduh invoice
+        }
+
+        $pdf = Pdf::loadView('reservations.invoice', compact('reservation')); // Load view invoice dan kirim data reservasi
+        return $pdf->download('Invoice_Hotel_No_' . $reservation->id . '.pdf'); // Unduh file PDF dengan nama yang sesuai
+    } 
 }

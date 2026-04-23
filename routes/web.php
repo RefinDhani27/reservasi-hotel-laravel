@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Room;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');  
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -22,6 +21,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pesanan-saya', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/kamar/{room}/pesan', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/kamar/{room}/pesan', [ReservationController::class, 'store'])->name('reservations.store');
+
+    Route::get('/pesanan/{reservation}/invoice', [ReservationController::class, 'downloadInvoice'])->name('reservations.invoice');
 });
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
